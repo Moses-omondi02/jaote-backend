@@ -1,4 +1,10 @@
 :root {
+  --blue-600: #0a47d1;
+  --blue-500: #007BFF;
+  --orange: #ff8a3d;
+  --soft: #f0f4f8;
+  --muted: #6b7280;
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -22,13 +28,16 @@ a:hover {
   color: #535bf2;
 }
 
+html,body,#root { height:100%; }
 body {
   margin: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(135deg, var(--soft), #007BFF22);
+  color: #111827;
   display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0f4f8, #ff9800);
 }
 
 h1 {
@@ -68,6 +77,57 @@ html, body, #root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+.container { max-width:1100px; margin:28px auto; padding:18px; }
+.card { background:white; border-radius:10px; padding:18px; box-shadow: 0 6px 18px rgba(10,10,20,0.06); }
+
+.muted { color:var(--muted); font-size:0.95rem; }
+
+/* small buttons */
+.btn {
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight:600;
+  cursor: pointer;
+}
+.btn.primary { background: var(--orange); color: #fff; }
+.btn.outline { background: transparent; border:1px solid #ddd; color: #333; }
+.btn.small { padding:6px 10px; font-size:0.9rem; }
+
+/* grid for cards */
+.grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+
+/* task card */
+.task-card { padding:14px; border-radius:8px; background:#fff; border:1px solid #eef2f6; display:flex; flex-direction:column; gap:8px; }
+.task-row { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.task-meta { color:var(--muted); font-size:0.95rem; }
+.task-desc { color:#374151; }
+
+/* modal */
+.modal-backdrop {
+  position: fixed; inset:0; background: rgba(2,6,23,0.45);
+  display:flex; align-items:center; justify-content:center; z-index:80;
+}
+.modal { background:white; width:96%; max-width:680px; padding:18px; border-radius:10px; position:relative; box-shadow: 0 20px 60px rgba(2,6,23,0.4); }
+.modal-close { position:absolute; right:12px; top:8px; font-size:20px; background:transparent; border:none; cursor:pointer; }
+
+/* form card */
+.form-card { display:flex; flex-direction:column; gap:8px; background: white; padding:18px; border-radius:8px; }
+label { font-size:0.95rem; color:#111827; }
+input, textarea { padding:10px; border-radius:8px; border:1px solid #e6edf3; }
+.error { color:#dc2626; font-size:0.9rem; }
+
+/* hero */
+.hero { display:flex; gap:18px; align-items:center; justify-content:space-between; }
+.hero-left { flex:1; }
+.hero-right { flex: 0 0 320px; }
+
+/* responsive */
+@media (max-width:760px){
+  .hero { flex-direction:column; }
+  .nav-right { display:flex; gap:10px; }
 }
 
 @media (prefers-color-scheme: light) {
