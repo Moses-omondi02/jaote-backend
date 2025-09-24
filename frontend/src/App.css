@@ -141,3 +141,26 @@ button:hover {
 .card:hover {
   transform: translateY(-5px);
 }
+
+/* Form Cards */
+.form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.form-card input,
+.form-card textarea {
+  margin-bottom: 18px;
+  font-size: 1.12rem;
+  padding: 15px 14px;
+  border-radius: 8px;
+  border: 1px solid #e6edf3;
+}
+
+.form-card label {
+  font-size: 1.12rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
