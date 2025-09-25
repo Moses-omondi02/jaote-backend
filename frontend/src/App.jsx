@@ -7,6 +7,8 @@ import SignupsPage from "./pages/SignupsPage";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import Home from "./pages/Pages";
+import Taskform from "./components/Taskform";
+import Signuplist from "./components/Signuplist";
 import "./App.css";
 
 function App() {
@@ -56,6 +58,13 @@ function App() {
           <Route path="/signups" element={<SignupsPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/test-forms" element={
+            <div>
+              <h1>Test Forms</h1>
+              <Taskform onSubmit={(values) => console.log("Task submitted:", values)} />
+              <Signuplist onSignup={(user) => console.log("User signed up:", user)} />
+            </div>
+          } />
         </Routes>
       </div>
     </div>
