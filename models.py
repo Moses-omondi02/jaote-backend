@@ -87,9 +87,6 @@ class Task(db.Model):
         cascade="all, delete-orphan"
     )
 
-    # Add relationship to User (the user who posted the task)
-    user = db.relationship("User", foreign_keys=[user_id])
-
     def to_dict(self):
         return {
             "id": self.id,
