@@ -10,10 +10,24 @@ class TestImports(unittest.TestCase):
     def test_import_app(self):
         """Test that main app modules can be imported"""
         try:
-            from backend import app, models, config
+            import app, models, config
             self.assertTrue(True)
         except ImportError as e:
             self.fail(f"Import failed: {e}")
+
+    def test_postgresql_support(self):
+        """Test that PostgreSQL driver is available"""
+        try:
+            import psycopg2
+            self.assertTrue(True)
+        except ImportError as e:
+            self.fail(f"PostgreSQL driver not available: {e}")
+
+    def test_config_postgresql(self):
+        """Test that PostgreSQL configuration is properly set"""
+        from config import config
+        prod_config = config['production']
+        self.assertIn('postgresql://', prod_config.SQLALCHEMY_DATABASE_URI)
 
 if __name__ == '__main__':
     unittest.main()
