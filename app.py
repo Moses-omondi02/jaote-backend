@@ -17,6 +17,18 @@ def create_app(config_name=None):
     migrate = Migrate(app, db)
     CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5174", "http://127.0.0.1:5174"])
 
+    # Seed database if empty
+    with app.app_context():
+        db.create_all()
+        if NGO.query.count() == 0:
+            from seed_data import seed_if_empty
+            seed_if_empty()
+
+    # Root route
+    @app.route('/', methods=['GET'])
+    def index():
+        return jsonify({'message': 'Welcome to the Volunteer API'})
+
     # API Routes
     @app.route('/api/tasks', methods=['GET'])
     def get_tasks():
@@ -46,6 +58,31 @@ def create_app(config_name=None):
         db.session.add(task)
         db.session.commit()
         return jsonify(task.to_dict()), 201
+
+    @app.route('/api/signups', methods=['POST'])
+    def volunteer_for_task():
+        data = request.get_json()
+        task_id = data.get('task_id')
+        user_id = data.get('user_id')
+        message = data.get('message', '')
+        if not task_id or not user_id:
+            return jsonify({'error': 'task_id and user_id required'}), 400
+        # Check if task exists
+        task = Task.query.get(task_id)
+        if not task:
+            return jsonify({'error': 'Task not found'}), 404
+        # Check if user exists
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        # Check if already signed up
+        existing_signup = Signup.query.filter_by(task_id=task_id, user_id=user_id).first()
+        if existing_signup:
+            return jsonify({'error': 'Already volunteered for this task'}), 400
+        signup = Signup(task_id=task_id, user_id=user_id, message=message)
+        db.session.add(signup)
+        db.session.commit()
+        return jsonify(signup.to_dict()), 201
 
     @app.route('/api/login', methods=['POST'])
     def login():
@@ -89,6 +126,7 @@ def create_app(config_name=None):
 
     @app.errorhandler(404)
     def not_found(error):
+        print(f"404 Error: Requested URL: {request.url}, Method: {request.method}")
         return jsonify({'error': 'Resource not found'}), 404
     
     @app.errorhandler(500)
@@ -102,4 +140,5 @@ app = create_app()
 
 # This allows us to use this file with Flask CLI commands
 if __name__ == '__main__':
+    print("Starting Flask app on host=0.0.0.0, port=5000, debug=True")
     app.run(debug=app.config['DEBUG'], host='0.0.0.0', port=5000)
