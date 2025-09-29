@@ -21,8 +21,12 @@ def create_app(config_name=None):
     with app.app_context():
         db.create_all()
         if NGO.query.count() == 0:
+            print("Database is empty, seeding with mock data...")
             from seed_data import seed_if_empty
             seed_if_empty()
+            print("Seeding completed.")
+        else:
+            print("Database already has data, skipping seed.")
 
     # Root route
     @app.route('/', methods=['GET'])
