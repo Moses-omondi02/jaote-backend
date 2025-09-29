@@ -15,7 +15,7 @@ def create_app(config_name=None):
     # Initialize extensions
     db.init_app(app)
     migrate = Migrate(app, db)
-    CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5174", "http://127.0.0.1:5174"])
+    CORS(app, origins=["*"])
 
     # Seed database if empty
     with app.app_context():
@@ -87,6 +87,35 @@ def create_app(config_name=None):
         db.session.add(signup)
         db.session.commit()
         return jsonify(signup.to_dict()), 201
+
+    @app.route('/api/task-signups', methods=['GET', 'POST'])
+    def task_signups():
+        if request.method == 'GET':
+            signups = Signup.query.all()
+            return jsonify([signup.to_dict() for signup in signups])
+        elif request.method == 'POST':
+            data = request.get_json()
+            task_id = data.get('task_id')
+            user_id = data.get('user_id')
+            message = data.get('message', '')
+            if not task_id or not user_id:
+                return jsonify({'error': 'task_id and user_id required'}), 400
+            # Check if task exists
+            task = Task.query.get(task_id)
+            if not task:
+                return jsonify({'error': 'Task not found'}), 404
+            # Check if user exists
+            user = User.query.get(user_id)
+            if not user:
+                return jsonify({'error': 'User not found'}), 404
+            # Check if already signed up
+            existing_signup = Signup.query.filter_by(task_id=task_id, user_id=user_id).first()
+            if existing_signup:
+                return jsonify({'error': 'Already volunteered for this task'}), 400
+            signup = Signup(task_id=task_id, user_id=user_id, message=message)
+            db.session.add(signup)
+            db.session.commit()
+            return jsonify(signup.to_dict()), 201
 
     @app.route('/api/login', methods=['POST'])
     def login():
